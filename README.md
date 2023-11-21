@@ -1,4 +1,4 @@
 # Progetto Nortwind
 
-# Query necessarie per aottenere i risultati richiesti, con presentazione annessa
+# Query necessarie per ottenere i risultati richiesti, con presentazione annessa
  
