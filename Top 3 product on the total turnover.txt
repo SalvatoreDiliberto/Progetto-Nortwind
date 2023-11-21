@@ -1,0 +1,14 @@
+-- Top 3 product on the total turnover
+SELECT 
+	p.productName,
+	cast(sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity))as int) as Total_income
+from 
+	"Order Details" od 
+join
+	products p on p.productid = od.ProductID 
+group by
+	od.productid
+order BY 
+	total_income DESC 
+LIMIT 
+	3;

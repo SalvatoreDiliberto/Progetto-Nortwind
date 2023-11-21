@@ -1,0 +1,10 @@
+SELECT
+	c.country as Country,
+	cast(sum((od.UnitPrice*od.Quantity)-(od.UnitPrice *od.Discount*od.Quantity))as int) as Total_income
+from orders o
+join Customers c on c.CustomerID = o.customerID
+join "Order Details" od on od.OrderID = o.orderid
+group by 
+	c.Country 
+order by 
+	total_income desc;

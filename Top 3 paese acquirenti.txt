@@ -1,0 +1,26 @@
+SELECT
+	c.country as Country,
+	cast(sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity))as int) as Total_income
+	,round((((sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity)))/TOTAL.INCOME)*100),2) as Percentage
+from 
+	orders o
+join 
+	Customers c on c.CustomerID = o.customerID
+join 
+	"Order Details" od on od.OrderID = o.orderid
+JOIN(
+	SELECT
+	cast(sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity))as int) as INCOME
+from 
+	orders o
+join 
+	Customers c on c.CustomerID = o.customerID
+join 
+	"Order Details" od on od.OrderID = o.orderid
+	) as TOTAL
+group by 
+	c.Country
+order by 
+	Total_income desc
+LIMIT 
+	5;

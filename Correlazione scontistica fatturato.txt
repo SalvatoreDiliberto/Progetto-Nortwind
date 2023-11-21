@@ -1,0 +1,32 @@
+select
+	c.country ,
+	--o.OrderID ,
+	--round((((sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity)))/TOTAL.INCOME)*100),2) as Percentage,
+	round(avg(od.Discount), 2)*100 as Sconto_Percentuale,
+	cast(sum((od.UnitPrice * od.Quantity)-(od.UnitPrice * od.Quantity * od.Discount)) as int) as Fatturato_Totale
+from
+	Customers c
+join Orders o on
+	o.CustomerID = c.CustomerID
+join "Order Details" od on
+	od.OrderID = o.OrderID
+JOIN(
+	SELECT
+	cast(sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity))as int) as INCOME
+from 
+	orders o
+join 
+	Customers c on c.CustomerID = o.customerID
+join 
+	"Order Details" od on od.OrderID = o.orderid
+	) as TOTAL
+--where
+	--c.country in ("Argentina", "Poland", "Italy", "Norway", "Spain", "Portugal", 'USA', 'Germany', 'Austria', 'Brazil', 'France')
+group by
+	c.country
+having 
+	Fatturato_Totale <= 20000		
+order by
+	Fatturato_Totale desc
+--LIMIT 
+	--5 

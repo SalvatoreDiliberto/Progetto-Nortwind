@@ -1,0 +1,21 @@
+--Paesi con fatturato < a 20.000
+	
+select
+	c2.country,
+	cast(sum((od.UnitPrice * od.Quantity)-(od.UnitPrice * od.Quantity * od.Discount))as int) as Fatturato_totale
+from
+	Orders o
+join 
+	"Order Details" od on o.OrderID = od.OrderID
+join 
+	Products p on p.ProductID = od.ProductID
+join 
+	Categories c on p.CategoryID = c.CategoryID
+JOIN 
+	Customers c2 on c2.CustomerID = o.CustomerID 	
+group BY 
+	c2.country
+having 
+	Fatturato_totale <= 20000
+order by 
+	Fatturato_totale desc

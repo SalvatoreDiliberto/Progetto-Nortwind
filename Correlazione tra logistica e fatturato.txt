@@ -1,0 +1,33 @@
+with tab1 as(
+				select
+					c.Country ,
+					cast(sum((od.UnitPrice * od.Quantity)-(od.UnitPrice * od.Quantity * od.Discount)) as int) as Fatturato_Totale,
+					o.OrderDate ,
+					o.requireddate,
+					o.ShippedDate,
+					(strftime('%s', o.requireddate) - strftime('%s', OrderDate)) / 86400 AS Attesa_prevista,
+					(strftime('%s', o.ShippedDate) - strftime('%s', OrderDate)) / 86400 AS Tempo_imballaggio
+				from
+					Customers c
+				join 
+					Orders o on o.CustomerID = c.CustomerID
+				join 
+					"Order Details" od on od.OrderID = o.OrderID
+				--where
+					--c.country in ("Argentina", "Poland", "Italy", "Norway", "Spain", "Portugal", 'USA', 'Germany', 'Austria', 'Brazil', 'France')
+				group by
+					c.Country
+				order by 
+					Fatturato_Totale asc
+				limit 7
+)	
+select 
+	country,
+	fatturato_totale,
+	attesa_prevista,
+	tempo_imballaggio,
+	tempo_imballaggio - attesa_prevista as Giorni_di_ritardo
+from
+	tab1
+order by 
+	fatturato_totale desc

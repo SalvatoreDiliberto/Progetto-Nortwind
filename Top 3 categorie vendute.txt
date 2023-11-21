@@ -1,0 +1,24 @@
+--Query per l'estrapolazione del guadagno diviso per categoria totale 
+SELECT
+	c2.categoryname,
+	cast((sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity))) as int) as CategoryIncome,
+	cast(((sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity))/(SELECT
+	cast(sum((od.UnitPrice*od.Quantity)-(od.Discount*od.Quantity))as int) as Total_income
+from 
+	"Order Details" od
+))*100)as int) as percentuale
+from orders o
+join 
+	Customers c on c.CustomerID = o.customerID
+join 
+	"Order Details" od on od.OrderID = o.orderid
+join 
+	Products p on p.ProductID = od.ProductID 
+join 
+	Categories c2 on c2.CategoryID = p.CategoryID
+group by
+	--c.country,
+	c2.CategoryName
+order BY 	
+	percentuale desc
+limit 
